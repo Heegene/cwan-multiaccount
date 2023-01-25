@@ -80,8 +80,8 @@ module "oregon_compute" {
   vpc_name                 = each.key
   vpc_id                   = each.value.vpc_attributes.id
   vpc_subnets              = values({ for k, v in each.value.private_subnet_attributes_by_az : split("/", k)[1] => v.id if split("/", k)[0] == "workload" })
-  number_azs               = var.oregon_spoke_vpcs[each.key].number_azs
-  instance_type            = var.oregon_spoke_vpcs[each.key].instance_type
+  number_azs               = var.oregon_vpcs[each.key].number_azs
+  instance_type            = var.oregon_vpcs[each.key].instance_type
   ec2_iam_instance_profile = module.iam.ec2_iam_instance_profile
   ec2_security_group       = local.oregon.security_groups.instance
 }
@@ -343,9 +343,9 @@ module "seoul_legacy_vpc" {
     awscc = awscc.awsccseoul
   }
 
-  name       = var.seoul_vpcs.name
-  cidr_block = var.seoul_vpcs.cidr_block
-  az_count   = var.seoul_vpcs.number_azs
+  name       = var.seoul_legacy_vpc.name
+  cidr_block = var.seoul_legacy_vpc.cidr_block
+  az_count   = var.seoul_legacy_vpc.number_azs
 
   transit_gateway_id = aws_ec2_transit_gateway.seoul_tgw.id
   transit_gateway_routes = {
@@ -353,10 +353,10 @@ module "seoul_legacy_vpc" {
   }
 
   subnets = {
-    vpc_endpoints = { cidrs = slice(var.seoul_vpcs.endpoint_subnet_cidrs, 0, var.seoul_vpcs.number_azs) }
-    workload      = { cidrs = slice(var.seoul_vpcs.workload_subnet_cidrs, 0, var.seoul_vpcs.number_azs) }
+    vpc_endpoints = { cidrs = slice(var.seoul_legacy_vpc.endpoint_subnet_cidrs, 0, var.seoul_legacy_vpc.number_azs) }
+    workload      = { cidrs = slice(var.seoul_legacy_vpc.workload_subnet_cidrs, 0, var.seoul_legacy_vpc.number_azs) }
     transit_gateway = {
-      cidrs                                           = slice(var.seoul_vpcs.tgw_subnet_cidrs, 0, var.seoul_vpcs.number_azs)
+      cidrs                                           = slice(var.seoul_legacy_vpc.tgw_subnet_cidrs, 0, var.seoul_legacy_vpc.number_azs)
       transit_gateway_default_route_table_association = false
       transit_gateway_default_route_table_propagation = false
     }

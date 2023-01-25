@@ -27,7 +27,7 @@ output "cloud_wan" {
 output "transit_gateway" {
   description = "AWS Transit Gateway resources."
   value = {
-    oregon    = aws_ec2_transit_gateway.oregon_tgw.id
+    #oregon    = aws_ec2_transit_gateway.oregon_tgw.id
     seoul     = aws_ec2_transit_gateway.seoul_tgw.id
   }
 }

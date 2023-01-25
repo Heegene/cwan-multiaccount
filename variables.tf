@@ -17,7 +17,7 @@ variable "aws_regions" {
   description = "AWS regions to spin up resources."
 
   default = {
-    seoul     = "ap-southeast-2"
+    seoul     = "ap-northeast-2"
     oregon    = "us-west-2"
   }
 }
