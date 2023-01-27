@@ -149,7 +149,8 @@ module "seoul_compute" {
   }
 
   project_name             = var.project_identifier
-  vpc_name                 = each.key
+  #vpc_name                 = each.key
+  vpc_name                 = var.seoul_vpcs[each.key].name
   vpc_id                   = each.value.vpc_attributes.id
   vpc_subnets              = values({ for k, v in each.value.private_subnet_attributes_by_az : split("/", k)[1] => v.id if split("/", k)[0] == "workload" })
   number_azs               = var.seoul_vpcs[each.key].number_azs
