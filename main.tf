@@ -186,63 +186,6 @@ module "iam" {
   project_name = var.project_identifier
 }
 
-# ---------- LAB 2: FEDERATE WITH AWS TRANSIT GATEWAY (TGW) ----------
-
-# # RESOURCES IN OREGON (us-west-2)
-# # Legacy VPC
-# module "oregon_legacy_vpc" {
-#   source  = "aws-ia/vpc/aws"
-#   version = "= 3.1.0"
-#   providers = {
-#     aws   = aws.awsoregon
-#     awscc = awscc.awsccoregon
-#   }
-
-#   name       = var.oregon_legacy_vpc.name
-#   cidr_block = var.oregon_legacy_vpc.cidr_block
-#   az_count   = var.oregon_legacy_vpc.number_azs
-
-#   transit_gateway_id = aws_ec2_transit_gateway.oregon_tgw.id
-#   transit_gateway_routes = {
-#     workload = "0.0.0.0/0"
-#   }
-
-#   subnets = {
-#     vpc_endpoints = { cidrs = slice(var.oregon_legacy_vpc.endpoint_subnet_cidrs, 0, var.oregon_legacy_vpc.number_azs) }
-#     workload      = { cidrs = slice(var.oregon_legacy_vpc.workload_subnet_cidrs, 0, var.oregon_legacy_vpc.number_azs) }
-#     transit_gateway = {
-#       cidrs                                           = slice(var.oregon_legacy_vpc.tgw_subnet_cidrs, 0, var.oregon_legacy_vpc.number_azs)
-#       transit_gateway_default_route_table_association = false
-#       transit_gateway_default_route_table_propagation = false
-#     }
-#   }
-# }
-
-# # Transit Gateway
-# resource "aws_ec2_transit_gateway" "oregon_tgw" {
-#   provider = aws.awsoregon
-
-#   description                     = "Transit Gateway - Oregon."
-#   amazon_side_asn                 = var.transit_gateway_asn.oregon
-#   default_route_table_association = "disable"
-#   default_route_table_propagation = "disable"
-
-#   tags = {
-#     Name = "tgw-us-west-2"
-#   }
-# }
-
-# # Transit Gateway Route Table
-# resource "aws_ec2_transit_gateway_route_table" "oregon_tgw_rt" {
-#   provider = aws.awsoregon
-
-#   transit_gateway_id = aws_ec2_transit_gateway.oregon_tgw.id
-
-#   tags = {
-#     Name = "tgw-rt-us-west-2"
-#   }
-# }
-
 # # Transit Gateway RT Association
 # resource "aws_ec2_transit_gateway_route_table_association" "oregon_tgw_rt_association" {
 #   provider = aws.awsoregon
@@ -400,12 +343,12 @@ resource "aws_ec2_transit_gateway_policy_table" "seoul_tgw_policy_table" {
   }
 }
 
-# resource "aws_ec2_transit_gateway_policy_table_association" "stockholm_tgw_policy_table_association" {
-#   provider = aws.awsstockholm
+resource "aws_ec2_transit_gateway_policy_table_association" "seoul_tgw_policy_table_association" {
+  provider = aws.awsseoul
 
-#   transit_gateway_attachment_id   = aws_networkmanager_transit_gateway_peering.cwan_stockholm_peering.transit_gateway_peering_attachment_id
-#   transit_gateway_policy_table_id = aws_ec2_transit_gateway_policy_table.stockholm_tgw_policy_table.id
-# }
+  transit_gateway_attachment_id   = aws_networkmanager_transit_gateway_peering.cwan_seoul_peering.transit_gateway_peering_attachment_id
+  transit_gateway_policy_table_id = aws_ec2_transit_gateway_policy_table.seoul_tgw_policy_table.id
+}
 
 
 # Transit Gateway RT Association (TGW <-> Legacy VPC)
