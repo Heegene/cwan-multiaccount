@@ -33,7 +33,12 @@ data "aws_networkmanager_core_network_policy_document" "core_nw_policy" {
   }
 
   segments {
-    name = "shared"
+    name = "legacy"
+    edge_locations = [
+      var.aws_regions.oregon,
+      var.aws_regions.seoul
+    ]
+    require_attachment_acceptance = false
   }
 
   # segments {
